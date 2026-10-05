@@ -31,11 +31,13 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # se lee de .env (local) o del panel de Render (producción)
 SECRET_KEY = config('SECRET_KEY')
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = config('DEBUG', default=False, cast=bool)
 
-ALLOWED_HOSTS = []
+# dominios permitidos, separados por comas en la variable
+ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='', cast=Csv())
 
+# direcciones completas (con https://) desde las que se aceptan formularios, como el login de /admin
+CSRF_TRUSTED_ORIGINS = config('CSRF_TRUSTED_ORIGINS', default='', cast=Csv())
 
 # Application definition
 
