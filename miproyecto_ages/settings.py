@@ -17,7 +17,7 @@ import pymysql
 pymysql.install_as_MySQLdb()
 
 # config: función de python-decouple que lee valores del archivo .env
-from decouple import config
+from decouple import config, Csv
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
