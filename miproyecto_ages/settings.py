@@ -27,7 +27,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/6.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-(&o4(oii1w5=$k6^psuv1q9j3z*817l##5)1s$5593c%1)&ne+'
+#SECRET_KEY = 'django-insecure-(&o4(oii1w5=$k6^psuv1q9j3z*817l##5)1s$5593c%1)&ne+'
+# se lee de .env (local) o del panel de Render (producción)
+SECRET_KEY = config('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -51,6 +53,8 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+     # WhiteNoiseMiddleware: nueva línea — debe ir justo después de SecurityMiddleware
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -139,6 +143,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/6.1/howto/static-files/
 
 STATIC_URL = 'static/'
+STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 
 # Email
@@ -148,4 +153,23 @@ MAILERS = {
     'default': {
         'BACKEND': 'django.core.mail.backends.console.EmailBackend',
     },
+}
+
+
+
+# STORAGES: NUEVO — le dice a Django cómo guardar archivos
+STORAGES = {
+    # "default": archivos que suban los usuarios; se deja el sistema normal de Django (obligatorio declararlo)
+    "default": {
+        # FileSystemStorage: guarda en disco, igual que antes de este cambio
+        "BACKEND": "django.core.files.storage.FileSystemStorage",
+    # cierre de la config de "default"
+    },
+    # "staticfiles": tus CSS/JS/imágenes; whitenoise los comprime y les pone una "huella" en el nombre
+    "staticfiles": {
+        # CompressedManifestStaticFilesStorage: el almacenamiento optimizado que trae whitenoise
+        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+    # cierre de la config de "staticfiles"
+    },
+# cierre del diccionario STORAGES
 }
